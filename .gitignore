@@ -1,0 +1,12 @@
+# IntelliJ
+.idea
+*.iml
+
+# Node
+node_modules
+typings
+npm-debug.log
+
+# Build process
+staging
+lib
