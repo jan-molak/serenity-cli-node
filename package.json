@@ -19,10 +19,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/smartcodeltd/serenity-aggregator.git"
+    "url": "git://github.com/smartcodeltd/serenity-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/smartcodeltd/serenity-aggregator/issues"
+    "url": "https://github.com/smartcodeltd/serenity-cli/issues"
   },
   "bin": {
     "serenity": "bin/serenity"
@@ -30,7 +30,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Jan Molak <jan.molak@smartcodeltd.co.uk>",
-  "homepage": "https://github.com/smartcodeltd/serenity-aggregator",
+  "homepage": "https://github.com/smartcodeltd/serenity-cli",
   "license": "Apache-2.0",
   "dependencies": {
     "chalk": "1.1.3",
