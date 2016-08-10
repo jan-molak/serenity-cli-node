@@ -1,6 +1,6 @@
 import { logger } from '../logger';
 
-export const notify = <T>(template: string, level: string = 'info') => (arg: T) => {
+export const notify = <T>(template: string, level: string) => (arg: T) => {
     if (typeof arg === 'boolean' && level !== 'debug') {
         logger.log(level, template);
     } else {
@@ -17,4 +17,4 @@ export const notify = <T>(template: string, level: string = 'info') => (arg: T) 
 export const debug    = <T>(template: string) => notify<T>(template, 'debug');
 export const inform   = <T>(template: string) => notify<T>(template, 'info');
 export const warn     = <T>(template: string) => notify<T>(template, 'warn');
-export const complain = (template: string) => notify<Error>(template, 'error');
+export const complain =    (template: string) => notify<Error>(template, 'error');
