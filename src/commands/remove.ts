@@ -6,12 +6,12 @@ import { defaults } from '../config';
 
 export const command = 'remove';
 
-export const desc = 'Removes the cache directory containing the Serenity BDD Reporter jar';
+export const desc = 'Removes the cache directory containing the Serenity BDD CLI jar file';
 
 export const builder = {
     cacheDir: {
         default:  defaults.cacheDir,
-        describe: 'An absolute or relative path to where the Serenity BDD Reporter jar should be stored',
+        describe: 'An absolute or relative path to where the Serenity BDD CLI jar file should be stored',
     },
 };
 

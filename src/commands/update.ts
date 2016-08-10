@@ -10,12 +10,12 @@ import { defaults } from '../config';
 
 export const command = 'update';
 
-export const desc = 'Makes sure the Serenity BDD Reporter jar is available and up to date';
+export const desc = 'Makes sure the Serenity BDD CLI jar file is available and up to date';
 
 export const builder = {
     cacheDir: {
         default:   defaults.cacheDir,
-        describe: 'An absolute or relative path to where the Serenity BDD Reporter jar should be stored',
+        describe: 'An absolute or relative path to where the Serenity BDD CLI jar file should be stored',
     },
 };
 
@@ -33,7 +33,10 @@ const downloadArtifactIfNeeded = (artifactGAV: string, repository: string) => (c
         pathToCached = path.resolve(cacheDir, filename);
 
     return checkIfFileMissing(pathToCached)
-        .then(conditionally(inform('Looks like the Serenity BDD Reporter needs updating...'), inform('Serenity BDD Reporter is up to date :-)')))
+        .then(conditionally(
+            inform('Looks like the Serenity BDD CLI jar file needs updating. Let me download it for you...'),
+            inform('Serenity BDD CLI jar file is up to date :-)')
+        ))
         .then(conditionally(() => download(artifactGAV, cacheDir, repository)))
-        .then(conditionally(inform('Downloaded %s')));
+        .then(conditionally(inform('Downloaded to %s')));
 };

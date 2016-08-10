@@ -28,7 +28,7 @@ describe('serenity update', () => {
         mockfs.restore();
     });
 
-    it ('does nothing if the Serenity BDD Reporter jar is already downloaded', () => {
+    it ('does nothing if the Serenity BDD CLI jar is already downloaded', () => {
 
         mockfs({
             '.cache': directoryWith(Artifact_File),
@@ -36,11 +36,11 @@ describe('serenity update', () => {
 
         return expect(update({ cacheDir: '.cache' })).to.be.eventually.fulfilled
             .then(() => {
-                expect(log.writeOutput.pop()).to.contain('Serenity BDD Reporter is up to date');
+                expect(log.writeOutput.pop()).to.contain('Serenity BDD CLI jar file is up to date');
             });
     });
 
-    it ('downloads the Serenity BDD Reporter if it is needed', () => {
+    it ('downloads the Serenity BDD CLI if it is needed', () => {
 
         let scope = nock(defaults.repository)
             .get(new RegExp(Artifact_File))
