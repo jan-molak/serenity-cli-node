@@ -6,11 +6,10 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "out"
+    "outDir": "staging/transpiled"
   },
 
   "exclude": [
-    "node_modules",
-    "examples"
+    "node_modules"
   ]
 }

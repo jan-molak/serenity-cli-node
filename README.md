@@ -1,1 +1,1 @@
-# Serenity Aggregator
+# Serenity CLI

@@ -17,5 +17,8 @@ module.exports = {
     src:      'src/**/*.ts',
     spec:     'spec/**/*.ts',
 
-    typings:  'typings/index.d.ts'
+    typings:  {
+        lib: 'typings/index.d.ts',
+        custom: 'spec/typings/chai-ds.d.ts'
+    }
 };

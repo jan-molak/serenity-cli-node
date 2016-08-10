@@ -1,8 +1,14 @@
 {
   "globalDependencies": {
     "core-js": "registry:dt/core-js#0.0.0+20160602141332",
+    "mkdirp": "registry:dt/mkdirp#0.3.0+20160317120654",
+    "mock-fs": "registry:dt/mock-fs#3.6.0+20160317120654",
+    "nock": "registry:dt/nock#0.54.0+20160613160405",
     "node": "registry:dt/node#6.0.0+20160802155038",
-    "promises-a-plus": "registry:dt/promises-a-plus#0.0.0+20160317120654"
+    "promises-a-plus": "registry:dt/promises-a-plus#0.0.0+20160317120654",
+    "rimraf": "registry:dt/rimraf#0.0.0+20160317120654",
+    "winston": "registry:dt/winston#0.0.0+20160417152829",
+    "yargs": "registry:dt/yargs#0.0.0+20160808125142"
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
@@ -10,5 +16,8 @@
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723",
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
+  },
+  "dependencies": {
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160723033700"
   }
 }

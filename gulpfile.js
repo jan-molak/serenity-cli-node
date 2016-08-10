@@ -26,7 +26,7 @@ gulp.task("lint", () =>
 );
 
 gulp.task('transpile', () => {
-    let transpiled = gulp.src([ dirs.src, dirs.spec, dirs.typings ])
+    let transpiled = gulp.src([ dirs.src, dirs.spec, dirs.typings.lib, dirs.typings.custom ])
         .pipe(sourcemaps.init())
         .pipe(ts(project, { sortOutput: true }));
 
@@ -64,7 +64,7 @@ gulp.task('test', ['pre-test'], () => {
         .pipe(mocha())
         .pipe(istanbul.writeReports({
             dir: dirs.staging.reports.coverage,
-            reporters: [ 'json' ],
+            reporters: [ 'json' ]
         }))
         .pipe(istanbul.enforceThresholds({ thresholds: { global: 70 } }))
         .on('end', remapToTypescript);

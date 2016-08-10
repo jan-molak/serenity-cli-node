@@ -22,3 +22,6 @@ src
 # Config files
 *.json
 !typings.json
+
+# Runtime caches
+.cache

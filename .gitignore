@@ -10,3 +10,7 @@ npm-debug.log
 # Build process
 staging
 lib
+
+# Runtime caches
+target
+.cache
