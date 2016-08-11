@@ -44,7 +44,7 @@ export const handler = (argv: any) =>
     findJava()
         .then(inform('Using Java at: %s'))
         .catch(complain('Did you set JAVA_HOME correctly? %s'))
-        .then(executeWith([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ]))
+        .then(executeWith(flatten([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ])))
         .catch(complain('%s'))
         .then(inform('All done!'));
 
@@ -64,10 +64,10 @@ const argumentsFrom = (argv: string) => {
               'project',
               'source',
           ],
-          onlySet  = (arg) => ! ! argv[ arg ],
-          toParams = (arg) => [ `--${ arg }`, argv[ arg ] ];
+          onlyThoseThatArePresent  = (arg) => !! argv[ arg ],
+          toCLIParams = (arg) => [ `--${ arg }`, argv[ arg ] ];
 
-    return flatten(validArguments.filter(onlySet).map(toParams)).join(' ');
+    return validArguments.filter(onlyThoseThatArePresent).map(toCLIParams);
 };
 
 const flatten = (list: any[]) => list.reduce(
