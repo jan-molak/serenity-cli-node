@@ -2,7 +2,7 @@ import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 
 import path = require('path');
-import { ensureFileIsPresent } from '../actions/files';
+import { ensureFileIsPresent, executeWith, filenameOf } from '../actions/files';
 const javaHome = require('java-home'); // tslint:disable-line:no-var-requires
 
 export const command = 'run';
@@ -42,11 +42,35 @@ export const builder = {
 
 export const handler = (argv: any) =>
     findJava()
-        .then(inform('Using Java at: %s'));
+        .then(inform('Using Java at: %s'))
+        .catch(complain('Did you set JAVA_HOME correctly? %s'))
+        .then(executeWith([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ]))
+        .catch(complain('%s'))
+        .then(inform('All done!'));
 
 // --
 
-const findJava = () =>
-    javaHome.getPath()
-        .then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin/java')))
-        .catch(complain('Is JAVA_HOME configured correctly? %s'));
+const findJava = () => javaHome.getPath().then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin/java')));
+
+const cliJarIn = (cacheDir: string) => path.resolve(cacheDir, filenameOf(defaults.artifact));
+
+const argumentsFrom = (argv: string) => {
+    const validArguments = [
+              'destination',
+              'features',
+              'issueTrackerUrl',
+              'jiraProject',
+              'jiraUrl',
+              'project',
+              'source',
+          ],
+          onlySet  = (arg) => ! ! argv[ arg ],
+          toParams = (arg) => [ `--${ arg }`, argv[ arg ] ];
+
+    return flatten(validArguments.filter(onlySet).map(toParams)).join(' ');
+};
+
+const flatten = (list: any[]) => list.reduce(
+    (acc, current) => (Array.isArray(current)
+        ? acc.push(...flatten(current))
+        : acc.push(current), acc), []);

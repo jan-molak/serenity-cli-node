@@ -19,6 +19,6 @@ module.exports = {
 
     typings:  {
         lib: 'typings/index.d.ts',
-        custom: 'spec/typings/chai-ds.d.ts'
+        custom: 'resources/typings/*.d.ts'
     }
 };

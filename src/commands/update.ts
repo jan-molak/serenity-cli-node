@@ -1,11 +1,9 @@
 import { default as download } from 'mvn-artifact-download';
-import { default as filenameOf } from 'mvn-artifact-filename';
-import { default as parseArtifact } from 'mvn-artifact-name-parser';
 import * as path from 'path';
 
-import { checkIfFileMissing, ensureDirectoryIsPresent } from '../actions/files';
+import { checkIfFileMissing, ensureDirectoryIsPresent, filenameOf } from '../actions/files';
 import { conditionally } from '../actions/flow_control';
-import { complain, debug, inform } from '../actions/logging';
+import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 
 export const command = 'update';
@@ -21,22 +19,23 @@ export const builder = {
 
 export const handler = (argv: any) =>
     ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir))
-        .then(debug('Using cache dir at %s'))
+        .catch(complain('Couldn\'t create a cache directory. %s'))
         .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository))
-        .catch(complain('A problem occurred: %s'));
+        .catch(complain('%s'));
 
 // --
 
-const downloadArtifactIfNeeded = (artifactGAV: string, repository: string) => (cacheDir: string) => {
+const downloadArtifactIfNeeded = (artifact: string, repository: string) => (cacheDir: string) => {
 
-    let filename = filenameOf(parseArtifact(artifactGAV)),
+    let filename = filenameOf(artifact),
         pathToCached = path.resolve(cacheDir, filename);
 
     return checkIfFileMissing(pathToCached)
+        .catch(complain('Couldn\'t access the cache directory. %s'))
         .then(conditionally(
-            inform('Looks like the Serenity BDD CLI jar file needs updating. Let me download it for you...'),
+            inform('Looks like you need the latest Serenity BDD CLI jar. Let me download it for you...'),
             inform('Serenity BDD CLI jar file is up to date :-)')
         ))
-        .then(conditionally(() => download(artifactGAV, cacheDir, repository)))
+        .then(conditionally(() => download(artifact, cacheDir, repository)))
         .then(conditionally(inform('Downloaded to %s')));
 };

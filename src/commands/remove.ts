@@ -17,5 +17,5 @@ export const builder = {
 
 export const handler = (argv: any) =>
     removeDirectory(path.resolve(process.cwd(), argv.cacheDir))
-        .catch(complain('Couldn\'t remove the cache directory: %s'))
+        .catch(complain('Couldn\'t remove the cache directory. %s'))
         .then(inform('Removed cache directory at %s'));

@@ -97,7 +97,7 @@ describe('serenity remove', () => {
                 .to.be.eventually.rejectedWith('EACCES, permission denied \'/some-system-dir/sytem-file.sys\'')
                 .then(() => {
                     expect(log.errorOutput.pop())
-                        .to.contain('Couldn\'t remove the cache directory: Error: EACCES, permission denied \'/some-system-dir/sytem-file.sys\'');
+                        .to.contain('Couldn\'t remove the cache directory. EACCES, permission denied \'/some-system-dir/sytem-file.sys\'');
                 });
         });
     });

@@ -1,14 +1,21 @@
 import { logger } from '../logger';
+import { format } from 'util';
 
 export const notify = <T>(template: string, level: string) => (arg: T) => {
-    if (typeof arg === 'boolean' && level !== 'debug') {
-        logger.log(level, template);
-    } else {
-        logger.log(level, template, [ arg ]);
-    }
 
-    if (arg instanceof Error) {
-        return Promise.reject<T>(arg);
+    switch (true) {
+        case arg instanceof Error:
+            logger.log(level, template, [ (<any> arg).message ]);
+
+            return Promise.reject<T>(new Error(format(template, (<any> arg).message)));
+
+        case typeof arg === 'boolean' && level !== 'debug':
+            logger.log(level, template);
+
+            break;
+
+        default:
+            logger.log(level, template, [ arg ]);
     }
 
     return Promise.resolve<T>(arg);

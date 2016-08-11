@@ -11,11 +11,10 @@ logger.add(winston.transports.Console, {
 });
 
 yargs
-    .alias('h', 'help').help('help')
     .version(() => require('../package.json').version)
     .demand(1)
     .usage('Usage: $0 <command> [options]')
     .epilog('copyright (C) Jan Molak <jan.molak@smartcodeltd.co.uk>')
     .commandDir('commands')
-    .help()
+    .alias('h', 'help').help()
     .argv;

@@ -58,19 +58,20 @@ describe('serenity update', () => {
 
     describe ('complains when the cache directory', () => {
 
-        it ('cannot be created', () => {
+        it ('cannot be accessed', () => {
 
             mockfs({
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
             });
 
-            return expect(update({ cacheDir: '/inaccessible-dir' })).to.be.eventually.rejected
-                .then(() => {
-                    expect(log.errorOutput.pop()).to.contain('A problem occurred: Error: EACCES, permission denied');
-                });
+            return expect(update({ cacheDir: '/inaccessible-dir' }))
+                .to.be.eventually.rejected
+                .then(() => expect(log.errorOutput.pop()).to.contain(
+                    'Couldn\'t access the cache directory. EACCES, permission denied'
+                ));
         });
 
-        it ('cannot be accessed', () => {
+        it ('cannot be created', () => {
 
             mockfs({
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
@@ -79,7 +80,7 @@ describe('serenity update', () => {
             return expect(update({ cacheDir: '/inaccessible-dir/cache' }))
                 .to.be.eventually.rejectedWith('EACCES, permission denied \'/inaccessible-dir/cache\'')
                 .then(() => {
-                    expect(log.errorOutput.pop()).to.contain('A problem occurred: Error: EACCES, permission denied');
+                    expect(log.errorOutput.pop()).to.contain('Couldn\'t create a cache directory. EACCES, permission denied');
                 });
         });
     });
