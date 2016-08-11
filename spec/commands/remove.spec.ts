@@ -54,7 +54,7 @@ describe('serenity remove', () => {
                 .then(() => {
                     expect(log.writeOutput.pop()).to.contain('Removed cache directory');
 
-                    expect(customCacheDir).to.not.be.a.path;
+                    expect(customCacheDir).to.not.be.a.file;
                 });
         });
     });
