@@ -94,10 +94,14 @@ describe('serenity run', () => {
             let pathToArtifact = path.resolve(defaults.cacheDir, filenameOf(defaults.artifact));
 
             return expect(run(Default_Arguments)).to.be.eventually.fulfilled
-                .then(() => expect(log.writeOutput[ 1 ]).to.contain(
-                    `-jar ${ pathToArtifact } --destination ${ defaults.reportDir } ` +
-                    `--features ${ defaults.featuresDir } --source ${ defaults.sourceDir }`
-                ));
+                .then(() => {
+                    expect(log.writeOutput).to.have.lengthOf(3);
+
+                    expect(log.writeOutput[ 1 ]).to.contain(
+                        `-jar ${ pathToArtifact } --destination ${ defaults.reportDir } ` +
+                        `--features ${ defaults.featuresDir } --source ${ defaults.sourceDir }`
+                    );
+                });
         });
 
     });
@@ -114,12 +118,10 @@ describe('serenity run', () => {
                   'info: -------------------------------',
                   'info: Loading test outcomes from target/site/serenity',
                   'info: Writing aggregated report to target/site/serenity',
-                  'info: ',
                   `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
                   `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
                   'info: net.serenitybdd.plugins.jira.JiraFileServiceUpdater - Update Jira for test results from /Users/jan/example/target/site/serenity',
                   'info: Report generation done',
-                  'info: ',
                   'info: All done!',
               ];
 

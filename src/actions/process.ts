@@ -28,8 +28,11 @@ export const executeWith = (args: string[]) => (pathToBinary: string) => new Pro
             case output.indexOf('INFO')  >= 0:
                 logger.info (interestingPartOf(output, 'INFO'));
                 break;
-            default:
+            case output.length > 0:
                 logger.info (output);
+                break;
+            default:
+                break;
         }
     }
 
