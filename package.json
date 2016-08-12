@@ -1,6 +1,6 @@
 {
   "name": "serenity-cli",
-  "version": "0.0.1",
+  "version": "0.0.0-semantic",
   "description": "Generates HTML reports from Serenity BDD-compatible JSON files",
   "scripts": {
     "commit": "git-cz",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jan-molak/serenity-cli-node.git"
+    "url": "https://github.com/jan-molak/serenity-cli-node.git"
   },
   "bugs": {
     "url": "https://github.com/jan-molak/serenity-cli-node/issues"
@@ -72,7 +72,8 @@
     "ts-node": "1.2.2",
     "tslint": "3.14.0",
     "typescript": "1.8.10",
-    "typings": "1.3.2"
+    "typings": "1.3.2",
+    "semantic-release": "^4.3.5"
   },
   "engines": {
     "node": ">= 4.2.1",
