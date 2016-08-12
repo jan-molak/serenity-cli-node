@@ -10,7 +10,6 @@ npm-debug.log
 
 # Build process
 staging
-lib
 gulpfile.config.js
 gulpfile.js
 mocha.opts
