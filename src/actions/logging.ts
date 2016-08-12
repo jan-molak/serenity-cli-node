@@ -9,7 +9,7 @@ export const notify = <T>(template: string, level: string) => (arg: T) => {
 
             return Promise.reject<T>(new Error(format(template, (<any> arg).message)));
 
-        case typeof arg === 'boolean' && level !== 'debug':
+        case typeof arg === 'boolean':
             logger.log(level, template);
 
             break;
@@ -21,7 +21,5 @@ export const notify = <T>(template: string, level: string) => (arg: T) => {
     return Promise.resolve<T>(arg);
 };
 
-export const debug    = <T>(template: string) => notify<T>(template, 'debug');
 export const inform   = <T>(template: string) => notify<T>(template, 'info');
-export const warn     = <T>(template: string) => notify<T>(template, 'warn');
 export const complain =    (template: string) => notify<Error>(template, 'error');

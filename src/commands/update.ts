@@ -5,6 +5,7 @@ import { checkIfFileMissing, ensureDirectoryIsPresent, filenameOf } from '../act
 import { conditionally } from '../actions/flow_control';
 import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
+import { adjustLogging } from '../logger';
 
 export const command = 'update';
 
@@ -18,7 +19,8 @@ export const builder = {
 };
 
 export const handler = (argv: any) =>
-    ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir))
+    adjustLogging(argv.verbose)
+        .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
         .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository))
         .catch(complain('%s'));

@@ -2,7 +2,9 @@ import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 
 import path = require('path');
-import { ensureFileIsPresent, executeWith, filenameOf } from '../actions/files';
+import { ensureFileIsPresent, filenameOf } from '../actions/files';
+import { executeWith } from '../actions/process';
+import { adjustLogging } from '../logger';
 const javaHome = require('java-home'); // tslint:disable-line:no-var-requires
 
 export const command = 'run';
@@ -41,7 +43,8 @@ export const builder = {
 };
 
 export const handler = (argv: any) =>
-    findJava()
+    adjustLogging(argv.verbose)
+        .then(findJava)
         .then(inform('Using Java at: %s'))
         .catch(complain('Did you set JAVA_HOME correctly? %s'))
         .then(executeWith(flatten([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ])))

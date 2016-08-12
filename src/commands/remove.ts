@@ -3,6 +3,7 @@ import * as path from 'path';
 import { removeDirectory } from '../actions/files';
 import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
+import { adjustLogging } from '../logger';
 
 export const command = 'remove';
 
@@ -16,6 +17,7 @@ export const builder = {
 };
 
 export const handler = (argv: any) =>
-    removeDirectory(path.resolve(process.cwd(), argv.cacheDir))
+    adjustLogging(argv.verbose)
+        .then(removeDirectory(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t remove the cache directory. %s'))
         .then(inform('Removed cache directory at %s'));

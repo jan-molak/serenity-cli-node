@@ -7,7 +7,6 @@ export interface Configuration {
     reportDir:   string;
     featuresDir: string;
     sourceDir:   string;
-    logLevel:    string;
 }
 
 export const defaults: Configuration = {
@@ -17,5 +16,4 @@ export const defaults: Configuration = {
     reportDir:   path.resolve(process.cwd(), 'target/site/serenity'),
     featuresDir: path.resolve(process.cwd(), 'features'),
     sourceDir:   path.resolve(process.cwd(), 'target/site/serenity'),
-    logLevel:    'info',        // todo: could be configurable?
 };

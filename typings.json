@@ -18,6 +18,7 @@
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
   },
   "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160723033700"
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160723033700",
+    "split": "registry:npm/split#1.0.0+20160723033700"
   }
 }
