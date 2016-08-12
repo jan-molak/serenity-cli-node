@@ -43,11 +43,9 @@ describe('serenity run', () => {
 
             scenario('path_to_java_home_is_invalid');
 
-            return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
-                    'Error: Did you set JAVA_HOME correctly? $JAVA_HOME is not set'
-                )
+            return expect(run(Default_Arguments)).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Did you set JAVA_HOME correctly? $JAVA_HOME is not set'
+                    'Did you set JAVA_HOME correctly?'
                 ));
         });
 
