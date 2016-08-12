@@ -18,6 +18,8 @@ mocha.opts
 # Pre-transpiled sources
 spec
 src
+resources
+target
 
 # Config files
 *.json
