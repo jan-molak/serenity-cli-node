@@ -1,6 +1,6 @@
 {
   "name": "serenity-cli",
-  "version": "0.0.0-semantic",
+  "version": "0.1.2",
   "description": "Generates HTML reports from Serenity BDD-compatible JSON files",
   "scripts": {
     "commit": "git-cz",
@@ -38,7 +38,7 @@
   "dependencies": {
     "java-home": "1.0.2",
     "mkdirp": "0.5.1",
-    "mvn-artifact-download": "1.1.4",
+    "mvn-artifact-download": "1.1.5",
     "mvn-artifact-filename": "1.0.5",
     "mvn-artifact-name-parser": "1.0.4",
     "rimraf": "2.5.4",
