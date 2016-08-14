@@ -1,6 +1,6 @@
 {
   "name": "serenity-cli",
-  "version": "0.1.2",
+  "version": "0.0.0-semantic",
   "description": "Generates HTML reports from Serenity BDD-compatible JSON files",
   "scripts": {
     "commit": "git-cz",
