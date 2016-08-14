@@ -30,7 +30,7 @@
   "bin": {
     "serenity": "bin/serenity"
   },
-  "main": "lib/index.js",
+  "main": "lib/cli.js",
   "typings": "lib/index.d.ts",
   "author": "Jan Molak <jan.molak@smartcodeltd.co.uk>",
   "homepage": "https://github.com/jan-molak/serenity-cli-node",
