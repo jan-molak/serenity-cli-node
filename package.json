@@ -3,10 +3,10 @@
   "version": "0.0.0-semantic",
   "description": "Generates HTML reports from Serenity BDD-compatible JSON files",
   "scripts": {
+    "init": "npm run typings -- install",
     "commit": "git-cz",
     "test": "gulp test",
     "prepublish": "gulp prepublish",
-    "postinstall": "npm run typings -- install",
     "typings": "typings",
     "report-coverage": "cat ./staging/reports/coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -31,7 +31,7 @@
     "serenity": "bin/serenity"
   },
   "main": "lib/cli.js",
-  "typings": "lib/index.d.ts",
+  "typings": "lib/cli.d.ts",
   "author": "Jan Molak <jan.molak@smartcodeltd.co.uk>",
   "homepage": "https://github.com/jan-molak/serenity-cli-node",
   "license": "Apache-2.0",
