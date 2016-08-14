@@ -9,7 +9,7 @@
     "package": "gulp package",
     "test": "gulp test",
     "prepublish": "npm run init && npm run clean && npm run package",
-    "typings": "./node_modules/bin/typings",
+    "typings": "./node_modules/.bin/typings",
     "report-coverage": "cat ./staging/reports/coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
