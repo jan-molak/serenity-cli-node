@@ -5,7 +5,7 @@ import winston = require('winston');
 import { Directory } from 'mock-fs';
 
 import { filenameOf } from '../../src/actions/files';
-import { handler as run } from '../../src/commands/run';
+import { handler as run, javaFor } from '../../src/commands/run';
 import { defaults } from '../../src/config';
 import { logger } from '../../src/logger';
 
@@ -35,6 +35,21 @@ describe('serenity run', () => {
         logger.remove(winston.transports.Memory);
 
         mockfs.restore();
+    });
+
+    describe ('uses the correct java binary', () => {
+
+        it('works on Windows', () => {
+           expect(javaFor('Windows_NT')).to.equal('java.exe');
+        });
+
+        it('works on Mac OS', () => {
+            expect(javaFor('Darwin')).to.equal('java');
+        });
+
+        it('works on Linux', () => {
+            expect(javaFor('Linux')).to.equal('java');
+        });
     });
 
     describe ('advises what to do when the JAVA_HOME', () => {

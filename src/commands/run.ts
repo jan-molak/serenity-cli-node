@@ -2,6 +2,8 @@ import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 
 import path = require('path');
+import os = require('os');
+
 import { ensureFileIsPresent, filenameOf } from '../actions/files';
 import { executeWith } from '../actions/process';
 import { adjustLogging } from '../logger';
@@ -53,7 +55,9 @@ export const handler = (argv: any) =>
 
 // --
 
-const findJava = () => javaHome.getPath().then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin/java')));
+export const javaFor = (os: string) => (os === 'Windows_NT') ? 'java.exe' : 'java';
+
+const findJava = () => javaHome.getPath().then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin', javaFor(os.type()))));
 
 const cliJarIn = (cacheDir: string) => path.resolve(cacheDir, filenameOf(defaults.artifact));
 
