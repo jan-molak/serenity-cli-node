@@ -24,7 +24,7 @@ export const ensureFileIsPresent = (destination: string) => new Promise<string>(
 
     fs.access(destination, constants.F_OK | constants.X_OK, (error?: Error) => {
         if (!! error) {
-            reject(new Error(format('Couldn\'t access "%s"', destination)));
+            reject(new Error(format('Couldn\'t access "%s": %s', destination, error)));
         } else {
             resolve(destination);
         }
