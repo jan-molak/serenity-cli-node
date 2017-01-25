@@ -52,31 +52,19 @@ describe('serenity run', () => {
         });
     });
 
-    describe ('advises what to do when the JAVA_HOME', () => {
+    describe ('advises what to do when the java executable', () => {
 
-        it ('points to a directory that does not exist', () => {
-
-            scenario('path_to_java_home_is_invalid');
-
-            return expect(run(Default_Arguments)).to.be.eventually.rejected
-                .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Did you set JAVA_HOME correctly?'
-                ));
-        });
-
-        it ('points to a directory that does not contain a java executable', () => {
+        it ('is not found in the current path', () => {
 
             mockfs({
                 '/some/java/home': Empty_Directory,
             });
 
-            process.env.JAVA_HOME = '/some/java/home';
-
             return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
-                    'Error: Did you set JAVA_HOME correctly? Couldn\'t access "/some/java/home/bin/java"'
+                    'Error: Is Java installed in the current path? not found: java'
                 )
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Did you set JAVA_HOME correctly? Couldn\'t access "/some/java/home/bin/java"'
+                    'Is Java installed in the current path? not found: java'
                 ));
         });
     });
@@ -190,6 +178,6 @@ describe('serenity run', () => {
     });
 
     function scenario(scenario: string) {
-        process.env.JAVA_HOME = path.resolve(process.cwd(), 'resources/java_scenarios/', scenario);
+        process.env.PATH = path.resolve(process.cwd(), 'resources/java_scenarios/', scenario, 'bin') + ':' + process.env.PATH;
     }
 });
