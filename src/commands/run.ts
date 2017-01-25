@@ -7,7 +7,7 @@ import os = require('os');
 import { ensureFileIsPresent, filenameOf } from '../actions/files';
 import { executeWith } from '../actions/process';
 import { adjustLogging } from '../logger';
-const javaHome = require('java-home'); // tslint:disable-line:no-var-requires
+import * as which from 'which';
 
 export const command = 'run';
 
@@ -48,7 +48,7 @@ export const handler = (argv: any) =>
     adjustLogging(argv.verbose)
         .then(findJava)
         .then(inform('Using Java at: %s'))
-        .catch(complain('Did you set JAVA_HOME correctly? %s'))
+        .catch(complain('Is Java installed in the current path? %s'))
         .then(executeWith(flatten([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ])))
         .catch(complain('%s'))
         .then(inform('All done!'));
@@ -57,7 +57,7 @@ export const handler = (argv: any) =>
 
 export const javaFor = (os: string) => (os === 'Windows_NT') ? 'java.exe' : 'java';
 
-const findJava = () => javaHome.getPath().then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin', javaFor(os.type()))));
+const findJava = () => ensureFileIsPresent(which.sync(javaFor(os.type())));
 
 const cliJarIn = (cacheDir: string) => path.resolve(cacheDir, filenameOf(defaults.artifact));
 
