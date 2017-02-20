@@ -56,10 +56,6 @@ export const handler = (argv: any) =>
 
 // --
 
-process.on('unhandledRejection', function (err) {
-    process.exit(1);    // "complain" rejects a promise to break the chain
-});
-
 export const javaFor = (os: string) => (os === 'Windows_NT') ? 'java.exe' : 'java';
 
 const findJava = () => javaHome.getPath()
