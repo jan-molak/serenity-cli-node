@@ -4,8 +4,7 @@ import winston = require('winston');
 import { logger } from './logger';
 
 process.on('unhandledRejection', function (err) {
-    console.error('An error occurred. Exiting now.');
-    process.exit(1);    // "complain" rejects a promise to break the chain
+    console.error('An error occurred.', err);
 });
 
 export = function bootstrap() {
