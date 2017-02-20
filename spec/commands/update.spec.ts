@@ -56,6 +56,20 @@ describe('serenity update', () => {
             });
     });
 
+    it ('advises what to do if the CDN could not be reached within the timeout', () => {
+
+        nock(defaults.repository)
+            .get(new RegExp(Artifact_File))
+            .replyWithError('ETIMEDOUT');
+
+        mockfs({});
+
+        return expect(update({ cacheDir: '.' })).to.be.rejectedWith('ETIMEDOUT')
+            .then(() => expect(log.errorOutput.pop()).to.contain(
+                'Looks like an error occurred downloading the Serenity BDD CLI jar. Are you behind a proxy or a firewall that needs to be configured? ETIMEDOUT'
+            ));
+    });
+
     describe ('complains when the cache directory', () => {
 
         it ('cannot be accessed', () => {

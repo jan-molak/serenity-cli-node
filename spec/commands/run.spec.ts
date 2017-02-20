@@ -3,6 +3,8 @@ import mockfs = require('mock-fs');
 import path = require('path');
 import winston = require('winston');
 import { Directory } from 'mock-fs';
+import fs = require('fs');
+import os = require('os');
 
 import { filenameOf } from '../../src/actions/files';
 import { handler as run, javaFor } from '../../src/commands/run';
@@ -57,7 +59,7 @@ describe('serenity run', () => {
 
         it('is not set up, but the java binary can be found on the $PATH', () => {
             scenario('path_to_java_home_is_invalid');
-            envPathFor('running_serenity')
+            process.env.PATH = append(stripJava(Path), 'running_serenity');
 
             return expect(run(Default_Arguments)).to.be.eventually.fulfilled
                 .then(() => {
@@ -71,7 +73,7 @@ describe('serenity run', () => {
         it ('points to a directory that does not exist and java binary is not on the $PATH', () => {
 
             scenario('path_to_java_home_is_invalid');
-            noJavaOnPath()
+            process.env.PATH = stripJava(Path);
 
             return expect(run(Default_Arguments)).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
@@ -86,7 +88,7 @@ describe('serenity run', () => {
             });
 
             process.env.JAVA_HOME = '/some/java/home';
-            noJavaOnPath()
+            process.env.PATH = stripJava(Path);
 
             return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
                 'Error: Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH'
@@ -210,11 +212,15 @@ describe('serenity run', () => {
         process.env.PATH      = Path;
     }
 
-    function envPathFor(scenario: string) {
-        process.env.PATH      = [Path, path.resolve(process.cwd(), 'resources/java_scenarios/', scenario, 'bin')].join(path.delimiter);
+    function append(systemPath: string, scenario: string) {
+        return [path.resolve(process.cwd(), 'resources/java_scenarios/', scenario, 'bin'), systemPath].join(path.delimiter);
     }
 
-    function noJavaOnPath() {
-        process.env.PATH      = Path.split(path.delimiter).filter(p => !! ~p.indexOf('java')).join(path.delimiter);
+    function stripJava(systemPath: string) {
+        let java = javaFor(os.type());
+
+        return systemPath.split(path.delimiter)
+            .filter(p => ! fs.existsSync(path.join(p, java)))
+            .join(path.delimiter);
     }
 });

@@ -21,5 +21,15 @@ export const notify = <T>(template: string, level: string) => (arg: T) => {
     return Promise.resolve<T>(arg);
 };
 
+export const advise = (template: string) => (error: Error) => {
+
+    switch (true) {
+        case /ETIMEDOUT/.test(error.message):
+            return complain(format(template, 'Are you behind a proxy or a firewall that needs to be configured?'))(error);
+        default:
+            return complain(template)(error);
+    }
+};
+
 export const inform   = <T>(template: string) => notify<T>(template, 'info');
 export const complain =    (template: string) => notify<Error>(template, 'error');

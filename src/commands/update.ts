@@ -1,9 +1,9 @@
-import { default as download } from 'mvn-artifact-download';
 import * as path from 'path';
 
+import { download } from '../actions/download';
 import { checkIfFileMissing, ensureDirectoryIsPresent, filenameOf } from '../actions/files';
 import { conditionally } from '../actions/flow_control';
-import { complain, inform } from '../actions/logging';
+import { advise, complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 import { adjustLogging } from '../logger';
 
@@ -16,18 +16,22 @@ export const builder = {
         default:   defaults.cacheDir,
         describe: 'An absolute or relative path to where the Serenity BDD CLI jar file should be stored',
     },
+    ignoreSSL: {
+        default:   false,
+        describe: 'Ignore SSL certificates',
+    },
 };
 
 export const handler = (argv: any) =>
     adjustLogging(argv.verbose)
         .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
-        .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository))
+        .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository, argv.ignoreSSL))
         .catch(complain('%s'));
 
 // --
 
-const downloadArtifactIfNeeded = (artifact: string, repository: string) => (cacheDir: string) => {
+const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSSL: boolean) => (cacheDir: string) => {
 
     let filename = filenameOf(artifact),
         pathToCached = path.resolve(cacheDir, filename);
@@ -38,6 +42,7 @@ const downloadArtifactIfNeeded = (artifact: string, repository: string) => (cach
             inform('Looks like you need the latest Serenity BDD CLI jar. Let me download it for you...'),
             inform('Serenity BDD CLI jar file is up to date :-)')
         ))
-        .then(conditionally(() => download(artifact, cacheDir, repository)))
+        .then(conditionally(() => download(artifact, cacheDir, ignoreSSL, repository)))
+        .catch(advise('Looks like an error occurred downloading the Serenity BDD CLI jar. %s'))
         .then(conditionally(inform('Downloaded to %s')));
 };
