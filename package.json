@@ -45,6 +45,7 @@
     "mvn-artifact-name-parser": "1.0.4",
     "rimraf": "2.5.4",
     "split": "1.0.0",
+    "which": "1.2.12",
     "winston": "2.2.0",
     "yargs": "4.8.1"
   },

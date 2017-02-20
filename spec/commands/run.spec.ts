@@ -20,7 +20,8 @@ describe('serenity run', () => {
           Verbose_Logging            = Object.assign(
               {}, Default_Arguments, { verbose: true }
           ),
-          Empty_Directory: Directory = <any> {};
+          Empty_Directory: Directory = <any> {},
+          Path: string = process.env.PATH;
 
     let log: { errorOutput: string[], writeOutput: string[] };
 
@@ -52,31 +53,46 @@ describe('serenity run', () => {
         });
     });
 
-    describe ('advises what to do when the JAVA_HOME', () => {
+    describe ('when JAVA_HOME', () => {
 
-        it ('points to a directory that does not exist', () => {
+        it('is not set up, but the java binary can be found on the $PATH', () => {
+            scenario('path_to_java_home_is_invalid');
+            envPathFor('running_serenity')
+
+            return expect(run(Default_Arguments)).to.be.eventually.fulfilled
+                .then(() => {
+                    let first = log.writeOutput[0];
+
+                    expect(first).to.contain('Using Java at:');
+                    expect(log.errorOutput).to.be.empty;
+                });
+        });
+
+        it ('points to a directory that does not exist and java binary is not on the $PATH', () => {
 
             scenario('path_to_java_home_is_invalid');
+            noJavaOnPath()
 
             return expect(run(Default_Arguments)).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Did you set JAVA_HOME correctly?'
+                    'Is Java set up correctly'
                 ));
         });
 
-        it ('points to a directory that does not contain a java executable', () => {
+        it ('points to a directory that does not contain a java executable and java binary is not on the $PATH', () => {
 
             mockfs({
                 '/some/java/home': Empty_Directory,
             });
 
             process.env.JAVA_HOME = '/some/java/home';
+            noJavaOnPath()
 
             return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
-                    'Error: Did you set JAVA_HOME correctly? Couldn\'t access "/some/java/home/bin/java"'
+                'Error: Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH'
                 )
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Did you set JAVA_HOME correctly? Couldn\'t access "/some/java/home/bin/java"'
+                    'Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH'
                 ));
         });
     });
@@ -191,5 +207,14 @@ describe('serenity run', () => {
 
     function scenario(scenario: string) {
         process.env.JAVA_HOME = path.resolve(process.cwd(), 'resources/java_scenarios/', scenario);
+        process.env.PATH      = Path;
+    }
+
+    function envPathFor(scenario: string) {
+        process.env.PATH      = [Path, path.resolve(process.cwd(), 'resources/java_scenarios/', scenario, 'bin')].join(path.delimiter);
+    }
+
+    function noJavaOnPath() {
+        process.env.PATH      = Path.split(path.delimiter).filter(p => !! ~p.indexOf('java')).join(path.delimiter);
     }
 });
