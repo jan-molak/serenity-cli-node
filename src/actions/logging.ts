@@ -26,6 +26,9 @@ export const advise = (template: string) => (error: Error) => {
     switch (true) {
         case /ETIMEDOUT/.test(error.message):
             return complain(format(template, 'Are you behind a proxy or a firewall that needs to be configured?'))(error);
+        case /self signed ceritificate in certificate chain/.test(error.message):
+            return complain(format(template, 'If you\'re using a self-signed certificate you might want to configure it correctly, ' +
+                'or use the --ignoreSSL option.'))(error);
         default:
             return complain(template)(error);
     }

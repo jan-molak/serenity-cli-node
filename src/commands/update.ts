@@ -31,6 +31,10 @@ export const handler = (argv: any) =>
 
 // --
 
+process.on('unhandledRejection', function (err) {
+    process.exit(1);    // "complain" rejects a promise to break the chain
+});
+
 const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSSL: boolean) => (cacheDir: string) => {
 
     let filename = filenameOf(artifact),
@@ -43,6 +47,6 @@ const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSS
             inform('Serenity BDD CLI jar file is up to date :-)')
         ))
         .then(conditionally(() => download(artifact, cacheDir, ignoreSSL, repository)))
-        .catch(advise('Looks like an error occurred downloading the Serenity BDD CLI jar. %s'))
-        .then(conditionally(inform('Downloaded to %s')));
+        .then(conditionally(inform('Downloaded to %s')))
+        .catch(advise('Looks like an error occurred downloading the Serenity BDD CLI jar. %s'));
 };
