@@ -20,13 +20,17 @@ export const builder = {
         default:   false,
         describe: 'Ignore SSL certificates',
     },
+    repository: {
+        default:   defaults.repository,
+        describe: 'Set the maven repository',
+    },
 };
 
 export const handler = (argv: any) =>
     adjustLogging(argv.log)
         .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
-        .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository, argv.ignoreSSL))
+        .then(downloadArtifactIfNeeded(defaults.artifact, argv.repository, argv.ignoreSSL))
         .catch(complain('%s'));
 
 // --
