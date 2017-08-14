@@ -46,7 +46,7 @@ export const builder = {
 };
 
 export const handler = (argv: any) =>
-    adjustLogging(argv.verbose)
+    adjustLogging(argv.log)
         .then(findJava)
         .then(inform('Using Java at: %s'))
         .catch(complain('Is Java set up correctly? %s'))

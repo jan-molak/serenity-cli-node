@@ -6,9 +6,7 @@ const logger: winston.LoggerInstance = new (winston.Logger)({
 
 export { logger };
 
-export function adjustLogging(beVerbose: boolean): Promise<void> {
-
-    let level = beVerbose ? 'debug' : 'info';
+export function adjustLogging(level: string): Promise<void> {
 
     winston.level = level;
 

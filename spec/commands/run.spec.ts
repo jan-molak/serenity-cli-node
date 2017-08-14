@@ -20,7 +20,10 @@ describe('serenity run', () => {
               source:      defaults.sourceDir,
           },
           Verbose_Logging            = Object.assign(
-              {}, Default_Arguments, { verbose: true }
+              {}, Default_Arguments, { log: 'verbose' }
+          ),
+          Debug_Logging            = Object.assign(
+            {}, Default_Arguments, { log: 'debug' }
           ),
           Empty_Directory: Directory = <any> {},
           Path: string = process.env.PATH;
@@ -126,7 +129,7 @@ describe('serenity run', () => {
 
             let pathToArtifact = path.resolve(defaults.cacheDir, filenameOf(defaults.artifact));
 
-            return expect(run(Default_Arguments)).to.be.eventually.fulfilled
+            return expect(run(Verbose_Logging)).to.be.eventually.fulfilled
                 .then(() => {
                     expect(log.writeOutput).to.have.lengthOf(3);
 
@@ -146,15 +149,15 @@ describe('serenity run', () => {
                   'to set the \'serenity.test.root\' property to the package representing ' +
                   'the top of your requirements hierarchy.',
               Expected_Output = [
-                  'info: -------------------------------',
-                  'info: SERENITY COMMAND LINE INTERFACE',
-                  'info: -------------------------------',
-                  'info: Loading test outcomes from target/site/serenity',
-                  'info: Writing aggregated report to target/site/serenity',
+                  'verbose: -------------------------------',
+                  'verbose: SERENITY COMMAND LINE INTERFACE',
+                  'verbose: -------------------------------',
+                  'verbose: Loading test outcomes from target/site/serenity',
+                  'verbose: Writing aggregated report to target/site/serenity',
                   `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
                   `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
-                  'info: net.serenitybdd.plugins.jira.JiraFileServiceUpdater - Update Jira for test results from /Users/jan/example/target/site/serenity',
-                  'info: Report generation done',
+                  'verbose: net.serenitybdd.plugins.jira.JiraFileServiceUpdater - Update Jira for test results from /Users/jan/example/target/site/serenity',
+                  'verbose: Report generation done',
                   'info: All done!',
               ];
 
@@ -162,6 +165,24 @@ describe('serenity run', () => {
             scenario('running_serenity');
 
             return expect(run(Default_Arguments)).to.be.eventually.fulfilled
+                .then(() => {
+                    let [first, ...rest] = log.writeOutput;
+
+                    expect(first).to.contain('Using Java at:');
+                    expect(rest).to.deep.equal([
+                        `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
+                        `warn: ${ NTCR }.PackageRequirementsTagProvider - ${ Warning }`,
+                        'info: All done!',
+                    ]);
+
+                    expect(log.errorOutput).to.be.empty;
+                });
+        });
+
+        it ('show more details if needed', () => {
+            scenario('running_serenity');
+
+            return expect(run(Verbose_Logging)).to.be.eventually.fulfilled
                 .then(() => {
                     let [first, ...rest] = log.writeOutput;
 
@@ -175,7 +196,7 @@ describe('serenity run', () => {
         it ('shows all the details if needed', () => {
             scenario('running_serenity');
 
-            return expect(run(Verbose_Logging)).to.be.eventually.fulfilled
+            return expect(run(Debug_Logging)).to.be.eventually.fulfilled
                 .then(() => {
                     let [, ...rest] = log.writeOutput;
 

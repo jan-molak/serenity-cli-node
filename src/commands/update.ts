@@ -23,7 +23,7 @@ export const builder = {
 };
 
 export const handler = (argv: any) =>
-    adjustLogging(argv.verbose)
+    adjustLogging(argv.log)
         .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
         .then(downloadArtifactIfNeeded(defaults.artifact, defaults.repository, argv.ignoreSSL))

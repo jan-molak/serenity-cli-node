@@ -23,13 +23,13 @@ export const executeWith = (args: string[]) => (pathToBinary: string) => new Pro
                 logger.debug(interestingPartOf(output, 'DEBUG'));
                 break;
             case output.indexOf('WARN')  >= 0:
-                logger.warn (interestingPartOf(output, 'WARN'));
+                logger.warn(interestingPartOf(output, 'WARN'));
                 break;
             case output.indexOf('INFO')  >= 0:
-                logger.info (interestingPartOf(output, 'INFO'));
+                logger.log('verbose', interestingPartOf(output, 'INFO'));
                 break;
             case output.length > 0:
-                logger.info (output);
+                logger.log('verbose', output);
                 break;
             default:
                 break;

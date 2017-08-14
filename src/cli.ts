@@ -14,7 +14,11 @@ export = function bootstrap() {
     yargs
         .version(() => require('../package.json').version)
         .demand(1)
-        .boolean('verbose')
+        .option('log', {
+            describe: 'log level',
+            choices: ['info', 'verbose', 'debug'],
+            default: 'info',
+        })
         .usage('Usage: $0 <command> [options]')
         .example('$0 update [options]', 'updates the Serenity jar to the latest version')
         .example('$0 remove [options]', 'removes the cache directory and downloaded jars')
