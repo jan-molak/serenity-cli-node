@@ -9,7 +9,7 @@ export const executeWith = (args: string[]) => (pathToBinary: string) => new Pro
             case output.indexOf('jarfile') > 0:
                 return 'Did you remember to run `serenity update`? ' + output;
             case output.indexOf('Unsupported major.minor version') >= 0:
-                return 'Looks like you\'re using an old version of Java? Serenity BDD needs Java 7 or newer.';
+                return 'Looks like you\'re using an old version of Java? Serenity BDD needs Java 8 or newer.';
             default:
                 return output;
         }
