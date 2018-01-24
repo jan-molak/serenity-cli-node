@@ -10,7 +10,7 @@ export interface Configuration {
 }
 
 export const defaults: Configuration = {
-    artifact:    'net.serenity-bdd:serenity-cli:jar:all:1.2.4',
+    artifact:    'net.serenity-bdd:serenity-cli:jar:all:1.8.0',
     repository:  'https://dl.bintray.com/serenity/maven/',
     cacheDir:    path.resolve(__dirname,     '../.cache'),
     reportDir:   path.resolve(process.cwd(), 'target/site/serenity'),
