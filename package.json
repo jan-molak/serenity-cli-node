@@ -8,10 +8,11 @@
     "clean": "gulp clean",
     "package": "gulp package",
     "test": "gulp test",
-    "prepublish": "npm run init && npm run clean && npm run package",
+    "prepublish": "npm run snyk-protect; npm run init && npm run clean && npm run package",
     "typings": "./node_modules/.bin/typings",
     "report-coverage": "cat ./staging/reports/coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "snyk-protect": "snyk protect"
   },
   "keywords": [
     "tdd",
@@ -48,7 +49,8 @@
     "split": "1.0.0",
     "which": "1.2.12",
     "winston": "2.2.0",
-    "yargs": "4.8.1"
+    "yargs": "4.8.1",
+    "snyk": "^1.59.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
@@ -87,5 +89,6 @@
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "snyk": true
 }
