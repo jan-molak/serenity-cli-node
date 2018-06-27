@@ -117,10 +117,10 @@ describe('serenity run', () => {
             scenario('java6');
 
             return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
-                    'Looks like you\'re using an old version of Java? Serenity BDD needs Java 7 or newer.'
+                    'Looks like you\'re using an old version of Java? Serenity BDD needs Java 8 or newer.'
                 )
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Looks like you\'re using an old version of Java? Serenity BDD needs Java 7 or newer.'
+                    'Looks like you\'re using an old version of Java? Serenity BDD needs Java 8 or newer.'
                 ));
         });
 
