@@ -1,8 +1,8 @@
 import { complain, inform } from '../actions/logging';
 import { defaults } from '../config';
 
-import path = require('path');
 import os = require('os');
+import path = require('path');
 
 import { ensureFileIsPresent, filenameOf } from '../actions/files';
 import { executeWith } from '../actions/process';
@@ -56,7 +56,7 @@ export const handler = (argv: any) =>
 
 // --
 
-export const javaFor = (os: string) => (os === 'Windows_NT') ? 'java.exe' : 'java';
+export const javaFor = (osName: string) => (osName === 'Windows_NT') ? 'java.exe' : 'java';
 
 const findJava = () => javaHome.getPath()
     .then(javaDir => ensureFileIsPresent(path.resolve(javaDir, 'bin', javaFor(os.type()))))
@@ -77,13 +77,16 @@ const argumentsFrom = (argv: string) => {
               'project',
               'source',
           ],
-          onlyThoseThatArePresent  = (arg) => !! argv[ arg ],
-          toCLIParams = (arg) => [ `--${ arg }`, argv[ arg ] ];
+          onlyThoseThatArePresent  = arg => !! argv[ arg ],
+          toCLIParams = arg => [ `--${ arg }`, argv[ arg ] ];
 
     return validArguments.filter(onlyThoseThatArePresent).map(toCLIParams);
 };
 
 const flatten = (list: any[]) => list.reduce(
-    (acc, current) => (Array.isArray(current)
-        ? acc.push(...flatten(current))
-        : acc.push(current), acc), []);
+    (acc, current) => {
+        Array.isArray(current)
+            ? acc.push(...flatten(current))
+            : acc.push(current);
+        return acc;
+    }, []);

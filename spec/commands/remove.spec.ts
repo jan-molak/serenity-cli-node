@@ -1,24 +1,27 @@
-import expect = require('../expect');
+import 'mocha';
+
 import mockfs = require('mock-fs');
 import winston = require('winston');
+import expect = require('../expect');
+import * as fs from 'fs';
 
-import { builder as args, handler as remove } from '../../src/commands/remove';
 import { Directory } from 'mock-fs';
+import { builder as args, handler as remove } from '../../src/commands/remove';
 
 import { logger } from '../../src/logger';
 
 describe('serenity remove', () => {
 
-    const Default_Args = { cacheDir: args.cacheDir.default },
-          Empty_Directory: Directory = <Directory> {};
+    const Default_Args = {cacheDir: args.cacheDir.default, log: 'info'},
+        Empty_Directory: Directory = {} as Directory;          // tslint:disable-line:no-object-literal-type-assertion
 
-    let log: { errorOutput: string[], writeOutput: string[] };
+    let log: winston.MemoryTransportInstance;
 
     beforeEach(() => {
         delete process.env.JAVA_HOME;
 
         logger.add(winston.transports.Memory);
-        log = logger.transports['memory'];             // tslint:disable-line:no-string-literal
+        log = logger.transports['memory'] as winston.MemoryTransportInstance;   // tslint:disable-line:no-string-literal
     });
 
     afterEach(() => {
@@ -26,9 +29,9 @@ describe('serenity remove', () => {
         mockfs.restore();
     });
 
-    describe ('considers the removal of the cache directory successful when it', () => {
+    describe('considers the removal of the cache directory successful when it', () => {
 
-        it ('existed and got correctly removed', () => {
+        it('existed and got correctly removed', () => {
             mockfs({
                 '.cache': {
                     'serenity-cli-1.0.0-all.jar': '',
@@ -38,29 +41,29 @@ describe('serenity remove', () => {
             return expect(remove(Default_Args))
                 .to.be.eventually.fulfilled
                 .then(() => {
-                    expect('.cache').to.not.be.a.path;
+                    expect(fs.existsSync('.cache')).to.be.false;             // tslint:disable-line:no-unused-expression
                 });
         });
 
-        it ('never existed', () => {
+        it('never existed', () => {
             mockfs({
                 '/tmp': Empty_Directory,
             });
 
             const customCacheDir = '/tmp/some/custom/cache';
 
-            return expect(remove({ cacheDir: customCacheDir }))
+            return expect(remove({cacheDir: customCacheDir, log: 'info'}))
                 .to.be.eventually.fulfilled
                 .then(() => {
                     expect(log.writeOutput.pop()).to.contain('Removed cache directory');
 
-                    expect(customCacheDir).to.not.be.a.file;
+                    expect(fs.existsSync(customCacheDir)).to.be.false;       // tslint:disable-line:no-unused-expression
                 });
         });
     });
 
-    describe ('notifies when the removal', () => {
-        it ('was successful (default cache dir)', () => {
+    describe('notifies when the removal', () => {
+        it('was successful (default cache dir)', () => {
             mockfs({
                 '.cache': {
                     'serenity-cli-1.0.0-all.jar': '',
@@ -74,26 +77,26 @@ describe('serenity remove', () => {
                 });
         });
 
-        it ('was successful (custom cache dir)', () => {
+        it('was successful (custom cache dir)', () => {
             mockfs({
                 '/tmp/serenity': {
                     'serenity-cli-1.0.0-all.jar': '',
                 },
             });
 
-            return expect(remove({ cacheDir: '/tmp/serenity' }))
+            return expect(remove({cacheDir: '/tmp/serenity', log: 'info'}))
                 .to.be.eventually.fulfilled
                 .then(() => {
                     expect(log.writeOutput.pop()).to.contain('Removed cache directory at /tmp/serenity');
                 });
         });
 
-        it ('failed because of the insufficient of permissions', () => {
+        it('failed because of the insufficient of permissions', () => {
             mockfs({
-                '/some-system-dir': systemDirectoryWith({ 'sytem-file.sys': '' }),
+                '/some-system-dir': systemDirectoryWith({'sytem-file.sys': ''}),
             });
 
-            return expect(remove({ cacheDir: '/some-system-dir' }))
+            return expect(remove({cacheDir: '/some-system-dir', log: 'info'}))
                 .to.be.eventually.rejectedWith('EACCES, permission denied \'/some-system-dir/sytem-file.sys\'')
                 .then(() => {
                     expect(log.errorOutput.pop())
@@ -102,7 +105,7 @@ describe('serenity remove', () => {
         });
     });
 
-    function systemDirectoryWith(files: any ): Directory {
-        return mockfs.directory({ mode: 0o000, items: files });
+    function systemDirectoryWith(files: any): Directory {
+        return mockfs.directory({mode: 0o000, items: files});
     }
 });

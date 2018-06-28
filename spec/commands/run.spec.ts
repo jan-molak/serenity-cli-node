@@ -1,3 +1,5 @@
+import 'mocha';
+
 import expect = require('../expect');
 import mockfs = require('mock-fs');
 import path = require('path');
@@ -18,23 +20,24 @@ describe('serenity run', () => {
               destination: defaults.reportDir,
               features:    defaults.featuresDir,
               source:      defaults.sourceDir,
+              log:         'info',
           },
           Verbose_Logging            = Object.assign(
-              {}, Default_Arguments, { log: 'verbose' }
+              {}, Default_Arguments, { log: 'verbose' },
           ),
           Debug_Logging            = Object.assign(
-            {}, Default_Arguments, { log: 'debug' }
+            {}, Default_Arguments, { log: 'debug' },
           ),
-          Empty_Directory: Directory = <any> {},
+          Empty_Directory: Directory = {} as any,
           Path: string = process.env.PATH;
 
-    let log: { errorOutput: string[], writeOutput: string[] };
+    let log: winston.MemoryTransportInstance;
 
     beforeEach (() => {
         delete process.env.JAVA_HOME;
 
         logger.add(winston.transports.Memory);
-        log = logger.transports['memory'];             // tslint:disable-line:no-string-literal
+        log = logger.transports['memory'] as winston.MemoryTransportInstance;   // tslint:disable-line:no-string-literal
     });
 
     afterEach (() => {
@@ -94,10 +97,10 @@ describe('serenity run', () => {
             process.env.PATH = stripJava(Path);
 
             return expect(run(Default_Arguments)).to.be.eventually.rejectedWith(
-                'Error: Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH'
+                    'Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH',
                 )
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH'
+                    'Is Java set up correctly? "java" could not be found at JAVA_HOME or on the PATH',
                 ));
         });
     });
@@ -107,7 +110,7 @@ describe('serenity run', () => {
         it('advises what to do if the jar has not been downloaded yet', () => {
             scenario('jar_not_found');
 
-            return expect(run({ cacheDir: '.' })).to.be.eventually.rejected
+            return expect(run({ cacheDir: '.', log: 'info' })).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
                     'Did you remember to run `serenity update`? Error: Unable to access jarfile'
                 ));
@@ -228,17 +231,17 @@ describe('serenity run', () => {
         });
     });
 
-    function scenario(scenario: string) {
-        process.env.JAVA_HOME = path.resolve(process.cwd(), 'resources/java_scenarios/', scenario);
+    function scenario(name: string) {
+        process.env.JAVA_HOME = path.resolve(process.cwd(), 'resources/java_scenarios/', name);
         process.env.PATH      = Path;
     }
 
-    function append(systemPath: string, scenario: string) {
-        return [path.resolve(process.cwd(), 'resources/java_scenarios/', scenario, 'bin'), systemPath].join(path.delimiter);
+    function append(systemPath: string, scenarioName: string) {
+        return [path.resolve(process.cwd(), 'resources/java_scenarios/', scenarioName, 'bin'), systemPath].join(path.delimiter);
     }
 
     function stripJava(systemPath: string) {
-        let java = javaFor(os.type());
+        const java = javaFor(os.type());
 
         return systemPath.split(path.delimiter)
             .filter(p => ! fs.existsSync(path.join(p, java)))

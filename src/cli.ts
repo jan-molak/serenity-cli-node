@@ -1,18 +1,21 @@
-import yargs = require('yargs');
 import winston = require('winston');
+import yargs = require('yargs');
 
 import { logger } from './logger';
 
-process.on('unhandledRejection', function (err) {
-    console.error('An error occurred.', err);
+process.on('unhandledRejection', function(err) {
+    console.error('An error occurred.', err);                                          // tslint:disable-line:no-console
 });
 
 export = function bootstrap() {
 
-    logger.add(winston.transports.Console, { colorize: true });
+    if (process.env.NODE_ENV !== 'test') {
+        logger.add(winston.transports.Console, { colorize: true });
+    }
 
+    // tslint:disable-next-line:no-unused-expression
     yargs
-        .version(() => require('../package.json').version)
+        .version(require('../package.json').version)
         .demand(1)
         .option('log', {
             describe: 'log level',

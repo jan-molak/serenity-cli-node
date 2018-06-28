@@ -1,25 +1,28 @@
-import expect = require('../expect');
+import 'mocha';
+
 import mockfs = require('mock-fs');
-import { handler as update } from '../../src/commands/update';
-import { defaults } from '../../src/config';
-import { logger } from '../../src/logger';
+import * as fs from 'fs';
 import { default as filenameOf } from 'mvn-artifact-filename';
 import { default as parseArtifact } from 'mvn-artifact-name-parser';
 import winston = require('winston');
+import { handler as update } from '../../src/commands/update';
+import { defaults } from '../../src/config';
+import { logger } from '../../src/logger';
+import expect = require('../expect');
 
-import nock = require('nock');
 import { Directory } from 'mock-fs';
+import nock = require('nock');
 
 describe('serenity update', () => {
 
     const Artifact_File = filenameOf(parseArtifact(defaults.artifact)),
           File_Contents = 'some binary stuff';
 
-    let log: { errorOutput: string[], writeOutput: string[] };
+    let log: winston.MemoryTransportInstance;
 
     beforeEach(() => {
         logger.add(winston.transports.Memory);
-        log = logger.transports['memory'];             // tslint:disable-line:no-string-literal
+        log = logger.transports['memory'] as winston.MemoryTransportInstance;   // tslint:disable-line:no-string-literal
     });
 
     afterEach(() => {
@@ -34,7 +37,7 @@ describe('serenity update', () => {
             '.cache': directoryWith(Artifact_File),
         });
 
-        return expect(update({ cacheDir: '.cache', repository: defaults.repository })).to.be.eventually.fulfilled
+        return expect(update({ cacheDir: '.cache', repository: defaults.repository, log: 'info' })).to.be.eventually.fulfilled
             .then(() => {
                 expect(log.writeOutput.pop()).to.contain('Serenity BDD CLI jar file is up to date');
             });
@@ -42,7 +45,7 @@ describe('serenity update', () => {
 
     it ('downloads the Serenity BDD CLI if it is needed', () => {
 
-        let scope = nock(defaults.repository)
+        const scope = nock(defaults.repository)
             .get(new RegExp(Artifact_File))
             .reply(200);
 
@@ -50,9 +53,9 @@ describe('serenity update', () => {
 
         return expect(update({ cacheDir: '.' , repository: defaults.repository})).to.be.eventually.fulfilled
             .then(() => {
-                expect(scope.isDone()).to.be.true;
+                expect(scope.isDone()).to.be.true;                           // tslint:disable-line:no-unused-expression
 
-                expect(Artifact_File).to.be.a.file;
+                expect(fs.existsSync(Artifact_File)).to.be.true;             // tslint:disable-line:no-unused-expression
             });
     });
 
@@ -64,9 +67,9 @@ describe('serenity update', () => {
 
         mockfs({});
 
-        return expect(update({ cacheDir: '.', repository: defaults.repository})).to.be.rejectedWith('ETIMEDOUT')
+        return expect(update({ cacheDir: '.', repository: defaults.repository, log: 'info' })).to.be.rejectedWith('ETIMEDOUT')
             .then(() => expect(log.errorOutput.pop()).to.contain(
-                'Looks like an error occurred downloading the Serenity BDD CLI jar. Are you behind a proxy or a firewall that needs to be configured? ETIMEDOUT'
+                'Looks like an error occurred downloading the Serenity BDD CLI jar. Are you behind a proxy or a firewall that needs to be configured? ETIMEDOUT',
             ));
     });
 
@@ -78,10 +81,10 @@ describe('serenity update', () => {
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
             });
 
-            return expect(update({ cacheDir: '/inaccessible-dir', repository: defaults.repository }))
+            return expect(update({ cacheDir: '/inaccessible-dir', repository: defaults.repository, log: 'info' }))
                 .to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Couldn\'t access the cache directory. EACCES, permission denied'
+                    'Couldn\'t access the cache directory. EACCES, permission denied',
                 ));
         });
 
@@ -91,7 +94,7 @@ describe('serenity update', () => {
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
             });
 
-            return expect(update({ cacheDir: '/inaccessible-dir/cache', repository: defaults.repository }))
+            return expect(update({ cacheDir: '/inaccessible-dir/cache', repository: defaults.repository, log: 'info' }))
                 .to.be.eventually.rejectedWith('EACCES, permission denied \'/inaccessible-dir/cache\'')
                 .then(() => {
                     expect(log.errorOutput.pop()).to.contain('Couldn\'t create a cache directory. EACCES, permission denied');
@@ -100,14 +103,14 @@ describe('serenity update', () => {
     });
 
     function directoryWith(filename: string): Directory {
-        let dir = <Directory> {};
+        const dir: Directory = {} as any;
 
         dir[filename] = File_Contents;
 
         return dir;
     }
 
-    function inaccessibleDirectoryWith(files: any ): Directory {
+    function inaccessibleDirectoryWith(files: any): Directory {
         return mockfs.directory({ mode: 0o000, items: files });
     }
 });

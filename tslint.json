@@ -1,7 +1,7 @@
 {
   "extends": "tslint:latest",
+  "rulesDirectory": "node_modules/tslint-microsoft-contrib",
   "rules": {
-    "no-console": [false],
     "quotemark": [true, "single", "avoid-escape"],
     "one-variable-per-declaration": false,
     "member-access": false,
@@ -28,11 +28,15 @@
     "one-line": false,
     "variable-name": [true, "ban-keywords"],
     "interface-name": [true, "never-prefix"],
-    "max-line-length": [true, 160],
+    "max-line-length": [true, 180],
     "member-ordering": [true,
       "public-before-private",
       "static-before-instance",
       "variables-before-functions"
-    ]
+    ],
+    "only-arrow-functions": false,
+    "arrow-parens": [true, "ban-single-arg-parens" ],
+    "max-classes-per-file": false,
+    "mocha-avoid-only": true
   }
 }

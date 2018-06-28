@@ -1,13 +1,13 @@
-import { logger } from '../logger';
 import { format } from 'util';
+import { logger } from '../logger';
 
 export const notify = <T>(template: string, level: string) => (arg: T) => {
 
     switch (true) {
         case arg instanceof Error:
-            logger.log(level, template, [ (<any> arg).message ]);
+            logger.log(level, template, [ (arg as any).message ]);
 
-            return Promise.reject<T>(new Error(format(template, (<any> arg).message)));
+            return Promise.reject<T>(new Error(format(template, (arg as any).message)));
 
         case typeof arg === 'boolean':
             logger.log(level, template);

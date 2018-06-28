@@ -1,10 +1,10 @@
-import fs = require('fs');
 import constants = require('constants');
+import fs = require('fs');
+import mkdirp = require('mkdirp');
+import rimraf = require('rimraf');
 import { format } from 'util';
 
 import { Stats } from 'fs';
-import mkdirp = require('mkdirp');
-import rimraf = require('rimraf');
 
 import { default as filename } from 'mvn-artifact-filename';
 import { default as parse } from 'mvn-artifact-name-parser';

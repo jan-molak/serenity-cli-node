@@ -1,7 +1,8 @@
-import chai = require('chai');
+import * as chai from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
+import * as sinonChai from 'sinon-chai';
 
-chai.use(require('sinon-chai'));            // tslint:disable-line:no-var-requires
-chai.use(require('chai-as-promised'));      // tslint:disable-line:no-var-requires
-chai.use(require('./chai-fs'));  // tslint:disable-line:no-var-requires
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 export = chai.expect;

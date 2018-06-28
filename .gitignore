@@ -12,5 +12,6 @@ staging
 lib
 
 # Runtime caches
+.nyc_output
 target
 .cache

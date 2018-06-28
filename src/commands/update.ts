@@ -37,14 +37,15 @@ export const handler = (argv: any) =>
 
 const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSSL: boolean) => (cacheDir: string) => {
 
-    let filename = filenameOf(artifact),
+    const
+        filename = filenameOf(artifact),
         pathToCached = path.resolve(cacheDir, filename);
 
     return checkIfFileMissing(pathToCached)
         .catch(complain('Couldn\'t access the cache directory. %s'))
         .then(conditionally(
             inform('Looks like you need the latest Serenity BDD CLI jar. Let me download it for you...'),
-            inform('Serenity BDD CLI jar file is up to date :-)')
+            inform('Serenity BDD CLI jar file is up to date :-)'),
         ))
         .then(conditionally(() => download(artifact, cacheDir, ignoreSSL, repository)))
         .then(conditionally(inform('Downloaded to %s')))

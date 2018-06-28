@@ -36,7 +36,7 @@ export const executeWith = (args: string[]) => (pathToBinary: string) => new Pro
         }
     }
 
-    let spawned = childProcess.spawn(pathToBinary, args);
+    const spawned = childProcess.spawn(pathToBinary, args);
 
     spawned.stdout.pipe(split()).on('data', log);
 
@@ -46,7 +46,7 @@ export const executeWith = (args: string[]) => (pathToBinary: string) => new Pro
         }
     });
 
-    spawned.on('close', (exitCode) => {
+    spawned.on('close', (exitCode: number) => {
         if (exitCode !== 0) {
             reject(new Error(`${pathToBinary} process exited with code ${exitCode}`));
         } else {
