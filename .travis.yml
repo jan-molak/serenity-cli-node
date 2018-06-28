@@ -9,7 +9,7 @@ node_js:
   - '8'
 before_script:
   - npm prune
-script: gulp
+script: npm run verify
 after_success:
   - npm run report-coverage
   - npm run semantic-release
