@@ -1,3 +1,4 @@
+import * as CI from 'ci-info';
 import * as path from 'path';
 
 import { download } from '../actions/download';
@@ -24,18 +25,22 @@ export const builder = {
         default:   defaults.repository,
         describe: 'Set the maven repository',
     },
+    progress: {
+        default:  ! CI.isCI,
+        describe: 'Show the progress bar; Defaults to false on CI servers to avoid polluting the logs.',
+    },
 };
 
 export const handler = (argv: any) =>
     adjustLogging(argv.log)
         .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
-        .then(downloadArtifactIfNeeded(defaults.artifact, argv.repository, argv.ignoreSSL))
+        .then(downloadArtifactIfNeeded(defaults.artifact, argv.repository, argv.ignoreSSL, argv.progress))
         .catch(complain('%s'));
 
 // --
 
-const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSSL: boolean) => (cacheDir: string) => {
+const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSSL: boolean, showProgress: boolean) => (cacheDir: string) => {
 
     const
         filename = filenameOf(artifact),
@@ -47,7 +52,7 @@ const downloadArtifactIfNeeded = (artifact: string, repository: string, ignoreSS
             inform('Looks like you need the latest Serenity BDD CLI jar. Let me download it for you...'),
             inform('Serenity BDD CLI jar file is up to date :-)'),
         ))
-        .then(conditionally(() => download(artifact, cacheDir, ignoreSSL, repository)))
+        .then(conditionally(() => download(artifact, cacheDir, ignoreSSL, showProgress, repository)))
         .then(conditionally(inform('Downloaded to %s')))
         .catch(advise('Looks like an error occurred downloading the Serenity BDD CLI jar. %s'));
 };
