@@ -15,21 +15,23 @@ import { logger } from '../../src/logger';
 
 describe('serenity run', () => {
 
-    const Default_Arguments          = {
-              cacheDir:    defaults.cacheDir,
-              destination: defaults.reportDir,
-              features:    defaults.featuresDir,
-              source:      defaults.sourceDir,
-              log:         'info',
-          },
-          Verbose_Logging            = Object.assign(
-              {}, Default_Arguments, { log: 'verbose' },
-          ),
-          Debug_Logging            = Object.assign(
+    const
+        Default_Arguments = {
+            artifact: defaults.artifact,
+            cacheDir: defaults.cacheDir,
+            destination: defaults.reportDir,
+            features: defaults.featuresDir,
+            source: defaults.sourceDir,
+            log: 'info',
+        },
+        Verbose_Logging = Object.assign(
+            {}, Default_Arguments, { log: 'verbose' },
+        ),
+        Debug_Logging = Object.assign(
             {}, Default_Arguments, { log: 'debug' },
-          ),
-          Empty_Directory: Directory = {} as any,
-          Path: string = process.env.PATH;
+        ),
+        Empty_Directory: Directory = {} as any,
+        Path: string = process.env.PATH;
 
     let log: winston.MemoryTransportInstance;
 
@@ -69,10 +71,10 @@ describe('serenity run', () => {
 
             return expect(run(Default_Arguments)).to.be.eventually.fulfilled
                 .then(() => {
-                    let first = log.writeOutput[0];
+                    const first = log.writeOutput[0];
 
                     expect(first).to.contain('Using Java at:');
-                    expect(log.errorOutput).to.be.empty;
+                    expect(log.errorOutput).to.be.empty;        // tslint:disable-line:no-unused-expression
                 });
         });
 
@@ -83,7 +85,7 @@ describe('serenity run', () => {
 
             return expect(run(Default_Arguments)).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
-                    'Is Java set up correctly'
+                    'Is Java set up correctly',
                 ));
         });
 
@@ -110,7 +112,7 @@ describe('serenity run', () => {
         it('advises what to do if the jar has not been downloaded yet', () => {
             scenario('jar_not_found');
 
-            return expect(run({ cacheDir: '.', log: 'info' })).to.be.eventually.rejected
+            return expect(run({ artifact: defaults.artifact, cacheDir: '.', log: 'info' })).to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
                     'Did you remember to run `serenity update`? Error: Unable to access jarfile'
                 ));

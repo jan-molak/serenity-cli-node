@@ -27,6 +27,10 @@ export const builder = {
         default:  defaults.featuresDir,
         describe: 'Source directory containing the Cucumber.js feature files',
     },
+    artifact: {
+        default:   defaults.artifact,
+        describe: `Serenity BDD CLI artifact to use; You're best off with the default option unless you want to experiment.`,
+    },
     source:          {
         default:  defaults.sourceDir,
         describe: 'Source directory containing the Serenity BDD JSON output files',
@@ -50,7 +54,7 @@ export const handler = (argv: any) =>
         .then(findJava)
         .then(inform('Using Java at: %s'))
         .catch(complain('Is Java set up correctly? %s'))
-        .then(executeWith(flatten([ '-jar', cliJarIn(argv.cacheDir), argumentsFrom(argv) ])))
+        .then(executeWith(flatten([ '-jar', cliJarIn(argv.cacheDir, argv.artifact), argumentsFrom(argv) ])))
         .catch(complain('%s'))
         .then(inform('All done!'));
 
@@ -65,20 +69,20 @@ const findJava = () => javaHome.getPath()
         throw new Error(`"${ javaFor(os.type()) }" could not be found at JAVA_HOME or on the PATH`);
     });
 
-const cliJarIn = (cacheDir: string) => path.resolve(cacheDir, filenameOf(defaults.artifact));
+const cliJarIn = (cacheDir: string, artifact: string) => path.resolve(cacheDir, filenameOf(artifact));
 
 const argumentsFrom = (argv: string) => {
     const validArguments = [
-              'destination',
-              'features',
-              'issueTrackerUrl',
-              'jiraProject',
-              'jiraUrl',
-              'project',
-              'source',
-          ],
-          onlyThoseThatArePresent  = arg => !! argv[ arg ],
-          toCLIParams = arg => [ `--${ arg }`, argv[ arg ] ];
+            'destination',
+            'features',
+            'issueTrackerUrl',
+            'jiraProject',
+            'jiraUrl',
+            'project',
+            'source',
+        ],
+        onlyThoseThatArePresent  = arg => !! argv[ arg ],
+        toCLIParams = arg => [ `--${ arg }`, argv[ arg ] ];
 
     return validArguments.filter(onlyThoseThatArePresent).map(toCLIParams);
 };
