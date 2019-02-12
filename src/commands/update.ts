@@ -25,6 +25,10 @@ export const builder = {
         default:   defaults.repository,
         describe: 'Set the maven repository',
     },
+    artifact: {
+        default:   defaults.artifact,
+        describe: `Serenity BDD CLI artifact to use; You're best off with the default option unless you want to experiment.`,
+    },
     progress: {
         default:  ! CI.isCI,
         describe: 'Show the progress bar; Defaults to false on CI servers to avoid polluting the logs.',
@@ -35,7 +39,7 @@ export const handler = (argv: any) =>
     adjustLogging(argv.log)
         .then(ensureDirectoryIsPresent(path.resolve(process.cwd(), argv.cacheDir)))
         .catch(complain('Couldn\'t create a cache directory. %s'))
-        .then(downloadArtifactIfNeeded(defaults.artifact, argv.repository, argv.ignoreSSL, argv.progress))
+        .then(downloadArtifactIfNeeded(argv.artifact, argv.repository, argv.ignoreSSL, argv.progress))
         .catch(complain('%s'));
 
 // --

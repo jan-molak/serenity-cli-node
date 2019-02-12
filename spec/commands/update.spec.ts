@@ -37,7 +37,12 @@ describe('serenity update', () => {
             '.cache': directoryWith(Artifact_File),
         });
 
-        return expect(update({ cacheDir: '.cache', repository: defaults.repository, log: 'info' })).to.be.eventually.fulfilled
+        return expect(update({
+            artifact: defaults.artifact,
+            cacheDir: '.cache',
+            repository: defaults.repository,
+            log: 'info',
+        })).to.be.eventually.fulfilled
             .then(() => {
                 expect(log.writeOutput.pop()).to.contain('Serenity BDD CLI jar file is up to date');
             });
@@ -51,7 +56,11 @@ describe('serenity update', () => {
 
         mockfs({});
 
-        return expect(update({ cacheDir: '.' , repository: defaults.repository})).to.be.eventually.fulfilled
+        return expect(update({
+            artifact: defaults.artifact,
+            cacheDir: '.' ,
+            repository: defaults.repository,
+        })).to.be.eventually.fulfilled
             .then(() => {
                 expect(scope.isDone()).to.be.true;                           // tslint:disable-line:no-unused-expression
 
@@ -67,7 +76,12 @@ describe('serenity update', () => {
 
         mockfs({});
 
-        return expect(update({ cacheDir: '.', repository: defaults.repository, log: 'info' })).to.be.rejectedWith('ETIMEDOUT')
+        return expect(update({
+            artifact: defaults.artifact,
+            cacheDir: '.',
+            repository: defaults.repository,
+            log: 'info',
+        })).to.be.rejectedWith('ETIMEDOUT')
             .then(() => expect(log.errorOutput.pop()).to.contain(
                 'Looks like an error occurred downloading the Serenity BDD CLI jar. Are you behind a proxy or a firewall that needs to be configured? ETIMEDOUT',
             ));
@@ -81,7 +95,12 @@ describe('serenity update', () => {
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
             });
 
-            return expect(update({ cacheDir: '/inaccessible-dir', repository: defaults.repository, log: 'info' }))
+            return expect(update({
+                artifact: defaults.artifact,
+                cacheDir: '/inaccessible-dir',
+                repository: defaults.repository,
+                log: 'info',
+            }))
                 .to.be.eventually.rejected
                 .then(() => expect(log.errorOutput.pop()).to.contain(
                     'Couldn\'t access the cache directory. EACCES, permission denied',
@@ -94,8 +113,12 @@ describe('serenity update', () => {
                 '/inaccessible-dir': inaccessibleDirectoryWith({ 'some-file.sys': '' }),
             });
 
-            return expect(update({ cacheDir: '/inaccessible-dir/cache', repository: defaults.repository, log: 'info' }))
-                .to.be.eventually.rejectedWith('EACCES, permission denied \'/inaccessible-dir/cache\'')
+            return expect(update({
+                artifact: defaults.artifact,
+                cacheDir: '/inaccessible-dir/cache',
+                repository: defaults.repository,
+                log: 'info',
+            })).to.be.eventually.rejectedWith('EACCES, permission denied \'/inaccessible-dir/cache\'')
                 .then(() => {
                     expect(log.errorOutput.pop()).to.contain('Couldn\'t create a cache directory. EACCES, permission denied');
                 });
