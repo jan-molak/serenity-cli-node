@@ -39,7 +39,7 @@
   "dependencies": {
     "ci-info": "1.1.3",
     "java-home": "1.0.7",
-    "mkdirp": "0.5.1",
+    "mkdirp": "0.5.2",
     "mvn-artifact-filename": "3.0.2",
     "mvn-artifact-name-parser": "3.0.1",
     "mvn-artifact-url": "3.0.2",
