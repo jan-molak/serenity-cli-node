@@ -42,7 +42,7 @@
     "mkdirp": "0.5.1",
     "mvn-artifact-filename": "3.0.2",
     "mvn-artifact-name-parser": "3.0.1",
-    "mvn-artifact-url": "3.0.2",
+    "mvn-artifact-url": "6.1.0",
     "progress": "2.0.0",
     "request": "2.87.0",
     "rimraf": "2.6.2",
